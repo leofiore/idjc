@@ -23,17 +23,17 @@ import atexit
 
 # This is and needs to remain the initial gtk import point.
 import glib
-import gobject
-import gtk
-import pango
+from gi.repository import GObject
+from gi.repository import Gtk
+from gi.repository import Pango
 
 from idjc import PGlobs, FGlobs
 from idjc.prelims import MAX_PROFILE_LENGTH, profile_name_valid, default
 from ..utils import Singleton
 
-gtk.gdk.threads_init()
-gtk.gdk.threads_enter()
-atexit.register(gtk.gdk.threads_leave)
+Gdk.threads_init()
+Gdk.threads_enter()
+atexit.register(Gdk.threads_leave)
 
 from ..gtkstuff import ConfirmationDialog
 from ..gtkstuff import ErrorMessageDialog
@@ -50,15 +50,15 @@ _ = t.gettext
 
 
 
-gtk.window_set_default_icon_from_file(PGlobs.default_icon)
+Gtk.window_set_default_icon_from_file(PGlobs.default_icon)
 
 
 
-class ProfileEntry(gtk.Entry):
+class ProfileEntry(Gtk.Entry):
     _allowed = (65056, 65361, 65363, 65365, 65288, 65289, 65535)
     
     def __init__(self):
-        gtk.Entry.__init__(self)
+        GObject.GObject.__init__(self)
         self.set_max_length(MAX_PROFILE_LENGTH)
         self.connect("key-press-event", self._cb_kp)
         self.connect("button-press-event", self._cb_button)
@@ -76,15 +76,15 @@ class ProfileEntry(gtk.Entry):
 
 
 
-class NewProfileDialog(gtk.Dialog):
+class NewProfileDialog(Gtk.Dialog):
     _icon_dialog = IconPreviewFileChooserDialog("Choose An Icon",
-                        buttons = (gtk.STOCK_CLEAR, gtk.RESPONSE_NONE,
-                                      gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                      gtk.STOCK_OK, gtk.RESPONSE_OK))
+                        buttons = (Gtk.STOCK_CLEAR, Gtk.ResponseType.NONE,
+                                      Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                      Gtk.STOCK_OK, Gtk.ResponseType.OK))
     
     
     def __init__(self, row, filter_function=None, title_extra = "", edit=False):
-        gtk.Dialog.__init__(self)
+        GObject.GObject.__init__(self)
         self.set_border_width(6)
         self.get_child().set_spacing(12)
         self.set_modal(True)
@@ -104,20 +104,20 @@ class NewProfileDialog(gtk.Dialog):
             title = _("New profile details")
         self.set_title(title + title_extra)
 
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_border_width(6)
         hbox.set_spacing(12)
         if edit:
-            icon = gtk.STOCK_EDIT
+            icon = Gtk.STOCK_EDIT
         else:
-            icon = gtk.STOCK_COPY if row else gtk.STOCK_NEW
-        self.image = gtk.image_new_from_stock(icon, gtk.ICON_SIZE_DIALOG)
+            icon = Gtk.STOCK_COPY if row else Gtk.STOCK_NEW
+        self.image = Gtk.Image.new_from_stock(icon, Gtk.IconSize.DIALOG)
         self.image.set_alignment(0.0, 0.0)
         hbox.pack_start(self.image, False)
-        table = gtk.Table(2, 4)
+        table = Gtk.Table(2, 4)
         table.set_row_spacings(6)
         table.set_col_spacing(0, 6)
-        hbox.pack_start(table)
+        hbox.pack_start(table, True, True, 0)
 
         labels = (
                 # TC: data entry dialog label text.
@@ -131,14 +131,14 @@ class NewProfileDialog(gtk.Dialog):
         names = ("profile_entry", "icon_button", "nickname_entry",
                                                         "description_entry")
         widgets = (ProfileEntry(), IconChooserButton(self._icon_dialog),
-                      gtk.Entry(), gtk.Entry())
+                      Gtk.Entry(), Gtk.Entry())
 
         for i, (label, name, widget) in enumerate(zip(labels, names, widgets)):
-            label = gtk.Label(label)
+            label = Gtk.Label(label=label)
             label.set_alignment(1.0, 0.5)
-            table.attach(label, 0, 1, i, i + 1, gtk.SHRINK | gtk.FILL)
+            table.attach(label, 0, 1, i, i + 1, Gtk.AttachOptions.SHRINK | Gtk.AttachOptions.FILL)
 
-            table.attach(widget, 1, 2, i, i + 1, yoptions=gtk.SHRINK)
+            table.attach(widget, 1, 2, i, i + 1, yoptions=Gtk.AttachOptions.SHRINK)
             setattr(self, name, widget)
 
         self.profile_entry.set_width_chars(30)
@@ -148,7 +148,7 @@ class NewProfileDialog(gtk.Dialog):
 
         if row is not None:
             profile = row[1] if edit else ""
-            revert = gtk.Button(stock=gtk.STOCK_REFRESH)
+            revert = Gtk.Button(stock=Gtk.STOCK_REFRESH)
             revert.connect("clicked", self._revert, row, edit)
             revert.clicked()
             bb.add(revert)
@@ -159,13 +159,13 @@ class NewProfileDialog(gtk.Dialog):
         if edit:
             if self.profile_entry.get_text() == default:
                 self.profile_entry.set_sensitive(False)
-            self.delete = gtk.Button(stock=gtk.STOCK_DELETE)
+            self.delete = Gtk.Button(stock=Gtk.STOCK_DELETE)
             self.delete.connect_after("clicked", lambda w: self.destroy())
             bb.add(self.delete)
-        cancel = gtk.Button(stock=gtk.STOCK_CANCEL)
+        cancel = Gtk.Button(stock=Gtk.STOCK_CANCEL)
         cancel.connect("clicked", lambda w: self.destroy())
         bb.add(cancel)
-        self.ok = gtk.Button(stock=gtk.STOCK_OK)
+        self.ok = Gtk.Button(stock=Gtk.STOCK_OK)
         bb.add(self.ok)
 
 
@@ -184,20 +184,20 @@ class NewProfileDialog(gtk.Dialog):
         
 
 
-class ProfileSingleton(Singleton, type(gtk.Dialog)):
+class ProfileSingleton(Singleton, type(Gtk.Dialog)):
     def __call__(cls, *args, **kwds):
         return super(ProfileSingleton, cls).__call__(*args, **kwds)
     
     
 
-class ProfileDialog(gtk.Dialog):
+class ProfileDialog(Gtk.Dialog):
     __metaclass__ = ProfileSingleton
     
     
-    __gproperties__ = {  "selection-active" : (gobject.TYPE_BOOLEAN, 
+    __gproperties__ = {  "selection-active" : (GObject.TYPE_BOOLEAN, 
                                 "selection active", 
                                 "selected profile is active",
-                                0, gobject.PARAM_READABLE),
+                                0, GObject.PARAM_READABLE),
                                 
                                 "selection": (str, "profile selection", 
                                 "profile selected in profile manager",
@@ -208,21 +208,21 @@ class ProfileDialog(gtk.Dialog):
     _new_profile_dialog_signal_names = "new", "clone", "edit"
 
     __gsignals__ = { "selection-active-changed" : (
-                                gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                (str, gobject.TYPE_BOOLEAN,)),
+                                GObject.SignalFlags.RUN_FIRST, None,
+                                (str, GObject.TYPE_BOOLEAN,)),
                                 
                           "selection-changed" : (
-                                gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+                                GObject.SignalFlags.RUN_FIRST, None,
                                 (str,))
     }
 
     __gsignals__.update(dict(
-            (x, (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-            (gobject.TYPE_STRING,))) for x in (_signal_names)))
+            (x, (GObject.SignalFlags.RUN_FIRST, None,
+            (GObject.TYPE_STRING,))) for x in (_signal_names)))
 
     __gsignals__.update(dict(
-            (x, (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-            (gobject.TYPE_STRING,) * 5))
+            (x, (GObject.SignalFlags.RUN_FIRST, None,
+            (GObject.TYPE_STRING,) * 5))
             for x in (_new_profile_dialog_signal_names)))
 
 
@@ -239,58 +239,58 @@ class ProfileDialog(gtk.Dialog):
         self._title_extra = ""
 
         # TC: profile dialog window title text.
-        gtk.Dialog.__init__(self, _("IDJC Profile Manager"))
+        GObject.GObject.__init__(self, _("IDJC Profile Manager"))
         self.set_size_request(600, 300)
         self.set_border_width(6)
-        w = gtk.ScrolledWindow()
+        w = Gtk.ScrolledWindow()
         w.set_border_width(6)
-        w.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        w.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        w.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
+        w.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.get_content_area().add(w)
-        self.store = gtk.ListStore(
-                            gtk.gdk.Pixbuf, str, str, int, str, str, int, int)
-        self.sorted = gtk.TreeModelSort(self.store)
+        self.store = Gtk.ListStore(
+                            GdkPixbuf.Pixbuf, str, str, int, str, str, int, int)
+        self.sorted = Gtk.TreeModelSort(self.store)
         self.sorted.set_sort_func(1, self._sort_func)
-        self.sorted.set_sort_column_id(1, gtk.SORT_ASCENDING)
-        self.treeview = gtk.TreeView(self.sorted)
+        self.sorted.set_sort_column_id(1, Gtk.SortType.ASCENDING)
+        self.treeview = Gtk.TreeView(self.sorted)
         self.treeview.set_headers_visible(True)
         self.treeview.set_rules_hint(True)
         w.add(self.treeview)
-        autorend = gtk.CellRendererPixbuf()
+        autorend = Gtk.CellRendererPixbuf()
         autorend.props.width = 16
-        autorend.props.stock_id = gtk.STOCK_APPLY
-        autorend.props.stock_size = gtk.ICON_SIZE_MENU
-        pbrend = gtk.CellRendererPixbuf()
+        autorend.props.stock_id = Gtk.STOCK_APPLY
+        autorend.props.stock_size = Gtk.IconSize.MENU
+        pbrend = Gtk.CellRendererPixbuf()
         pbrend.props.width = 16
-        strrend = gtk.CellRendererText()
+        strrend = Gtk.CellRendererText()
         ledrend = CellRendererLED()
         time_rend = CellRendererTime()
-        strrend_ellip = gtk.CellRendererText()
-        strrend_ellip.props.ellipsize = pango.ELLIPSIZE_END
+        strrend_ellip = Gtk.CellRendererText()
+        strrend_ellip.props.ellipsize = Pango.EllipsizeMode.END
         # TC: column heading. The available profile names appears below.
-        c0 = gtk.TreeViewColumn(None, autorend, visible=7)
-        image = gtk.image_new_from_stock(gtk.STOCK_OPEN, gtk.ICON_SIZE_MENU)
+        c0 = Gtk.TreeViewColumn(None, autorend, visible=7)
+        image = Gtk.Image.new_from_stock(Gtk.STOCK_OPEN, Gtk.IconSize.MENU)
         c0.set_widget(image)
         image.show()
         self.treeview.append_column(c0)
-        c1 = gtk.TreeViewColumn(_("Profile"))
-        c1.pack_start(pbrend, expand=False)
-        c1.pack_start(strrend)
+        c1 = Gtk.TreeViewColumn(_("Profile"))
+        c1.pack_start(pbrend, False, True, 0)
+        c1.pack_start(strrend, True, True, 0)
         c1.add_attribute(pbrend, "pixbuf", 0)
         c1.add_attribute(strrend, "text", 1)
         c1.set_spacing(2)
         self.treeview.append_column(c1)
         # TC: column heading. The profile nicknames.
-        c2 = gtk.TreeViewColumn(_("Nickname"), strrend, text=5)
+        c2 = Gtk.TreeViewColumn(_("Nickname"), strrend, text=5)
         self.treeview.append_column(c2)
         # TC: column heading.
-        c3 = gtk.TreeViewColumn(_("Description"), strrend_ellip, text=2)
+        c3 = Gtk.TreeViewColumn(_("Description"), strrend_ellip, text=2)
         c3.set_expand(True)
         self.treeview.append_column(c3)
         # TC: column heading. The time a particular profile has been running.
-        c4 = gtk.TreeViewColumn(_("Up-time"))
-        c4.pack_start(ledrend)
-        c4.pack_start(time_rend)
+        c4 = Gtk.TreeViewColumn(_("Up-time"))
+        c4.pack_start(ledrend, True, True, 0)
+        c4.pack_start(time_rend, True, True, 0)
         c4.add_attribute(ledrend, "active", 3)
         c4.add_attribute(time_rend, "time", 6)
         c4.set_spacing(2)
@@ -301,11 +301,11 @@ class ProfileDialog(gtk.Dialog):
         box.set_spacing(6)
         for attr, label, sec, stock in zip(
                 ("new", "clone", "edit", "delete", "auto", "cancel", "choose"), 
-                (gtk.STOCK_NEW, gtk.STOCK_COPY, gtk.STOCK_EDIT,
-                 gtk.STOCK_DELETE, _("_Auto"), gtk.STOCK_QUIT, gtk.STOCK_OPEN),
+                (Gtk.STOCK_NEW, Gtk.STOCK_COPY, Gtk.STOCK_EDIT,
+                 Gtk.STOCK_DELETE, _("_Auto"), Gtk.STOCK_QUIT, Gtk.STOCK_OPEN),
                 (True,) * 4 + (False,) * 3,
                 (True,) * 4 + (False,) + (True,) * 2):
-            w = gtk.Button(label)
+            w = Gtk.Button(label)
             w.set_use_stock(stock)
             box.add(w)
             box.set_child_secondary(w, sec)
@@ -421,7 +421,7 @@ class ProfileDialog(gtk.Dialog):
     def _cb_visible(self, *args):
         self._update_data()
         if self.props.visible:
-            gobject.timeout_add(200, threadslock(self._update_data))
+            GObject.timeout_add(200, threadslock(self._update_data))
         
         
     def _cb_selection(self, ts):
@@ -483,8 +483,8 @@ class ProfileDialog(gtk.Dialog):
         val = model.get_value(iter, 7)
         cell.set_visible(val)
         if val:
-            cell.props.stock_id = gtk.STOCK_APPLY
-            cell.props.stock_size = gtk.ICON_SIZE_MENU
+            cell.props.stock_id = Gtk.STOCK_APPLY
+            cell.props.stock_size = Gtk.IconSize.MENU
 
 
     def _update_data(self):
@@ -506,7 +506,7 @@ class ProfileDialog(gtk.Dialog):
                             i = None
                     if i is not None:
                         try:
-                            pb = gtk.gdk.pixbuf_new_from_file_at_size(i, 16, 16)
+                            pb = GdkPixbuf.Pixbuf.new_from_file_at_size(i, 16, 16)
                         except glib.GError:
                             pb = i = None
                     else:
@@ -536,9 +536,9 @@ class ProfileDialog(gtk.Dialog):
         except glib.GError:
             print "Profile icon image file not found:", iconpathname
         else:
-            gtk.window_set_default_icon_from_file(iconpathname)
+            Gtk.window_set_default_icon_from_file(iconpathname)
 
-        self.cancel.set_label(gtk.STOCK_CLOSE)
+        self.cancel.set_label(Gtk.STOCK_CLOSE)
         self.connect("delete-event", self._cb_delete_event)
         self.response(0)
         
@@ -546,7 +546,7 @@ class ProfileDialog(gtk.Dialog):
     def run(self):
         if self._profile is None:
             self.show_all()
-            gtk.Dialog.run(self)
+            Gtk.Dialog.run(self)
         else:
             self.show()
 

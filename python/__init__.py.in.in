@@ -23,8 +23,8 @@ import os
 import gettext
 import ctypes
 
-import pygtk
-pygtk.require("2.0")
+import gi
+gi.require_version("Gtk", "3.0")
 import glib
 
 from .utils import FixedAttributes

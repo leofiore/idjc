@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: putidjcinthesubjectline@bethere.co.uk\n"
-"POT-Creation-Date: 2014-02-17 19:31+0000\n"
+"POT-Creation-Date: 2014-04-10 01:46+0200\n"
 "PO-Revision-Date: 2013-11-07 16:48+0000\n"
 "Last-Translator: \n"
 "Language-Team: English <team@example.com>\n"
@@ -308,6 +308,7 @@ msgstr ""
 
 #. TC: text appears in the title bar when in session mode.
 #: python/prelims/__init__.py:590
+#, python-brace-format
 msgid "session={type}:{name}"
 msgstr ""
 
@@ -342,14 +343,17 @@ msgid "Profile %s is active."
 msgstr "Il profilo %s è attivo."
 
 #: python/prelims/__init__.py:791
+#, python-brace-format
 msgid "Cannot rename profile {0} to {1}, {1} currently exists."
 msgstr "Non posso rinominare il profilo {0} in {1}, {1} è già presente."
 
 #: python/prelims/__init__.py:795
+#, python-brace-format
 msgid "Error during attempt to rename {0} to {1}."
 msgstr "Errore nel tentativo di rinominare {0} in {1}."
 
 #: python/prelims/__init__.py:805
+#, python-brace-format
 msgid ""
 "<span weight='bold' size='12000'>Error while editing profile: {0}.</span>\n"
 "\n"
@@ -361,6 +365,7 @@ msgstr ""
 "{1}"
 
 #: python/prelims/__init__.py:824
+#, python-brace-format
 msgid "could not get a lock on profile {0}: {1}"
 msgstr ""
 
@@ -536,6 +541,7 @@ msgstr ""
 
 #. TC: The contents of <> and {} must not be changed.
 #: python/dialogs.py:198
+#, python-brace-format
 msgid ""
 "<span weight=\"bold\" size=\"12000\">The connection to the server in tab "
 "{servertab} has failed.</span>\n"
@@ -1083,10 +1089,12 @@ msgid "No compatible ports available."
 msgstr ""
 
 #: python/maingui.py:363
+#, python-brace-format
 msgid "{0} profile={1}:{2} settings saved."
 msgstr ""
 
 #: python/maingui.py:366
+#, python-brace-format
 msgid "{0} session={1}:{2} settings saved."
 msgstr ""
 
@@ -1356,6 +1364,7 @@ msgstr "Flusso"
 #. TC: Context {0}, {1}, {2} = Monitor Mix, Stream, DJ
 #. TC: Or whatever they become translated to.
 #: python/maingui.py:3384
+#, python-brace-format
 msgid ""
 "In IDJC there are are two audio paths and this '{0}' control toggles between "
 "them. When '{1}' is active you can hear what the listeners are hearing "
@@ -2585,6 +2594,7 @@ msgid "Ignored playlist control"
 msgstr "Controlli playlist ignorati"
 
 #: python/playergui.py:3859
+#, python-brace-format
 msgid "Playing track {0} of {1}"
 msgstr "Riproduzione traccia {0} di {1}"
 
@@ -4091,6 +4101,7 @@ msgstr "Nessun server principale configurato"
 
 #. TC: Recorder menu format string.
 #: python/sourceclientgui.py:2626
+#, python-brace-format
 msgid "{numericid} [{source}] > [{directory}]"
 msgstr ""
 

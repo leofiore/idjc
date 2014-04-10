@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: putidjcinthesubjectline@bethere.co.uk\n"
-"POT-Creation-Date: 2014-02-17 19:31+0000\n"
+"POT-Creation-Date: 2014-04-10 01:46+0200\n"
 "PO-Revision-Date: 2013-11-07 16:47+0000\n"
 "Last-Translator: \n"
 "Language-Team: English <team@example.com>\n"
@@ -312,6 +312,7 @@ msgstr ""
 
 #. TC: text appears in the title bar when in session mode.
 #: python/prelims/__init__.py:590
+#, python-brace-format
 msgid "session={type}:{name}"
 msgstr "session={type}:{name}"
 
@@ -346,14 +347,17 @@ msgid "Profile %s is active."
 msgstr "Le profil %s est actif."
 
 #: python/prelims/__init__.py:791
+#, python-brace-format
 msgid "Cannot rename profile {0} to {1}, {1} currently exists."
 msgstr "Impossible de renommer le profil {0} en {1}, {1} existe déjà."
 
 #: python/prelims/__init__.py:795
+#, python-brace-format
 msgid "Error during attempt to rename {0} to {1}."
 msgstr "Erreur lors de la tentative de renommage de {0} en {1}."
 
 #: python/prelims/__init__.py:805
+#, python-brace-format
 msgid ""
 "<span weight='bold' size='12000'>Error while editing profile: {0}.</span>\n"
 "\n"
@@ -365,6 +369,7 @@ msgstr ""
 "{1}"
 
 #: python/prelims/__init__.py:824
+#, python-brace-format
 msgid "could not get a lock on profile {0}: {1}"
 msgstr "impossible d'obtenir le vérouillage du profil {0} : {1}"
 
@@ -540,6 +545,7 @@ msgstr ""
 
 #. TC: The contents of <> and {} must not be changed.
 #: python/dialogs.py:198
+#, python-brace-format
 msgid ""
 "<span weight=\"bold\" size=\"12000\">The connection to the server in tab "
 "{servertab} has failed.</span>\n"
@@ -1075,10 +1081,12 @@ msgid "No compatible ports available."
 msgstr "Aucun port compatible n'est disponible"
 
 #: python/maingui.py:363
+#, python-brace-format
 msgid "{0} profile={1}:{2} settings saved."
 msgstr "{0} profil={1}:{2} paramêtres sauvegardés."
 
 #: python/maingui.py:366
+#, python-brace-format
 msgid "{0} session={1}:{2} settings saved."
 msgstr "{0} session={1}:{2} paramêtres sauvegardés."
 
@@ -1349,6 +1357,7 @@ msgstr "Flux"
 #. TC: Context {0}, {1}, {2} = Monitor Mix, Stream, DJ
 #. TC: Or whatever they become translated to.
 #: python/maingui.py:3384
+#, python-brace-format
 msgid ""
 "In IDJC there are are two audio paths and this '{0}' control toggles between "
 "them. When '{1}' is active you can hear what the listeners are hearing "
@@ -2551,6 +2560,7 @@ msgid "Ignored playlist control"
 msgstr "Contrôle de liste de lecture ignoré"
 
 #: python/playergui.py:3859
+#, python-brace-format
 msgid "Playing track {0} of {1}"
 msgstr "Lecture piste {0} sur {1}"
 
@@ -4075,6 +4085,7 @@ msgstr "Aucun enregistreur configuré correctement"
 
 #. TC: Recorder menu format string.
 #: python/sourceclientgui.py:2626
+#, python-brace-format
 msgid "{numericid} [{source}] > [{directory}]"
 msgstr "{numericid} [{source}] > [{directory}]"
 

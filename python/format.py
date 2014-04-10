@@ -21,8 +21,8 @@ import gettext
 import ctypes
 from abc import ABCMeta, abstractmethod, abstractproperty
 
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 
 from idjc import FGlobs
 from .gtkstuff import LEDDict
@@ -282,7 +282,7 @@ def format_collate(specifier):
     return d
 
 
-class FormatDropdown(gtk.VBox):
+class FormatDropdown(Gtk.VBox):
     def __init__(self, prev_object, title, ident, elements, row, tooltip=None):
         """Parameter 'elements' is a tuple of dictionaries.
         
@@ -295,30 +295,30 @@ class FormatDropdown(gtk.VBox):
         self.prev_object = prev_object
         self._ident = ident
         self._row = row
-        gtk.VBox.__init__(self)
-        frame = gtk.Frame(" %s " % title)
+        GObject.GObject.__init__(self)
+        frame = Gtk.Frame(" %s " % title)
         frame.set_label_align(0.5, 0.5)
         if tooltip is not None:
             set_tip(frame, tooltip)
-        self.pack_start(frame, fill=False)
-        size_group = gtk.SizeGroup(gtk.SIZE_GROUP_VERTICAL)
-        vbox = gtk.VBox()
+        self.pack_start(frame, True, False, 0)
+        size_group = Gtk.SizeGroup(Gtk.SizeGroupMode.VERTICAL)
+        vbox = Gtk.VBox()
         vbox.set_border_width(3)
         frame.add(vbox)
         
-        model = gtk.ListStore(gobject.TYPE_PYOBJECT)
+        model = Gtk.ListStore(GObject.TYPE_PYOBJECT)
         default = 0
         for index, each in enumerate(elements):
             if "default" in each and each["default"]:
                 default = index
             model.append(((each),))
-        cell_text = gtk.CellRendererText()
-        self._combo_box = gtk.ComboBox(model)
+        cell_text = Gtk.CellRendererText()
+        self._combo_box = Gtk.ComboBox(model)
         size_group.add_widget(self._combo_box)
-        self._combo_box.pack_start(cell_text)
+        self._combo_box.pack_start(cell_text, True, True, 0)
         self._combo_box.set_cell_data_func(cell_text, self._cell_data_func)
         vbox.pack_start(self._combo_box, False)
-        self._fixed = gtk.Label()
+        self._fixed = Gtk.Label()
         size_group.add_widget(self._fixed)
         vbox.pack_start(self._fixed, False)
         self._fixed.set_no_show_all(True)
@@ -385,13 +385,13 @@ class FormatDropdown(gtk.VBox):
                     break
 
 
-class FormatSpin(gtk.VBox):
+class FormatSpin(Gtk.VBox):
     def __init__(self, prev_object, title, ident, elements, row, unit, next_element_name, suggested_values, tooltip=None):
         """Parameter 'elements' is a tuple of dictionaries.
         
         @title: appears above the widget
         @name: is the official name of the control element
-        @elements: the values of the gtk.Adjustment as integers
+        @elements: the values of the Gtk.Adjustment as integers
         @unit: e.g. " Hz"
         @suggested_values: sequence of standard values
         """
@@ -401,33 +401,33 @@ class FormatSpin(gtk.VBox):
         self._row = row
         self._unit = unit
         self._next_element_name = next_element_name
-        gtk.VBox.__init__(self)
-        frame = gtk.Frame(" %s " % title)
+        GObject.GObject.__init__(self)
+        frame = Gtk.Frame(" %s " % title)
         frame.set_label_align(0.5, 0.5)
         if tooltip is not None:
             set_tip(frame, tooltip)
-        self.pack_start(frame, fill=False)
-        vbox = gtk.VBox()
+        self.pack_start(frame, True, False, 0)
+        vbox = Gtk.VBox()
         vbox.set_border_width(3)
         frame.add(vbox)
         
-        adjustment = gtk.Adjustment(*(float(x) for x in elements))
-        self._spin_button = gtk.SpinButton(adjustment)
+        adjustment = Gtk.Adjustment(*(float(x) for x in elements))
+        self._spin_button = Gtk.SpinButton(adjustment)
         if suggested_values is not None:
             self._spin_button.connect("populate_popup", self._on_populate_popup, suggested_values)
             if tooltip is None:
                 set_tip(self._spin_button, _('Right click for suggested values.'))
         vbox.pack_start(self._spin_button, False)
-        self._fixed = gtk.Label()
+        self._fixed = Gtk.Label()
         self._fixed.set_alignment(0.5, 0.5)
-        vbox.pack_start(self._fixed)
+        vbox.pack_start(self._fixed, True, True, 0)
         self._fixed.set_no_show_all(True)
 
         self._spin_button.connect("value-changed", self._on_changed)
         self._spin_button.emit("value-changed")
         
         self.show_all()
-        size_group = gtk.SizeGroup(gtk.SIZE_GROUP_VERTICAL)
+        size_group = Gtk.SizeGroup(Gtk.SizeGroupMode.VERTICAL)
         size_group.add_widget(prev_object.get_children()[0])
         size_group.add_widget(frame)
 
@@ -435,14 +435,14 @@ class FormatSpin(gtk.VBox):
         self._fixed.set_text(str(int(spin_button.props.value)) + self._unit)
 
     def _on_populate_popup(self, spin, menu, values):
-        mi = gtk.MenuItem(_('Suggested Values'))
+        mi = Gtk.MenuItem(_('Suggested Values'))
         menu.append(mi)
         mi.show()
-        submenu = gtk.Menu()
+        submenu = Gtk.Menu()
         mi.set_submenu(submenu)
         submenu.show()
         for each in values:
-            mi = gtk.MenuItem(str(each))
+            mi = Gtk.MenuItem(str(each))
             mi.connect("activate", self._on_popup_activate, spin, each)
             submenu.append(mi)
             mi.show()
@@ -1103,34 +1103,34 @@ class FormatFamily(FormatDropdown):
             _('Codecs have been grouped by standards body and or container format.'))
 
 
-class FormatControl(gtk.VBox):
+class FormatControl(Gtk.VBox):
     __gproperties__ = {
-        'cap-icecast': (gobject.TYPE_BOOLEAN, 'icecast capable',
+        'cap-icecast': (GObject.TYPE_BOOLEAN, 'icecast capable',
                         'if true this format can stream to icecast',
-                        0, gobject.PARAM_READABLE),
+                        0, GObject.PARAM_READABLE),
                         
-        'cap-shoutcast': (gobject.TYPE_BOOLEAN, 'shoutcast capable',
+        'cap-shoutcast': (GObject.TYPE_BOOLEAN, 'shoutcast capable',
                         'if true this format can stream to shoutcast',
-                        0, gobject.PARAM_READABLE),
+                        0, GObject.PARAM_READABLE),
                         
-        'cap-recordable': (gobject.TYPE_BOOLEAN, 'can be recorded',
+        'cap-recordable': (GObject.TYPE_BOOLEAN, 'can be recorded',
                         'if true this format is compatible with the recording facility',
-                        0, gobject.PARAM_READABLE)
+                        0, GObject.PARAM_READABLE)
     }
     
     def __init__(self, send, receive):
-        gtk.VBox.__init__(self)
+        GObject.GObject.__init__(self)
         self.set_border_width(6)
         self.set_spacing(4)
-        elem_box = [gtk.HBox()]
-        self.pack_start(elem_box[0])
+        elem_box = [Gtk.HBox()]
+        self.pack_start(elem_box[0], True, True, 0)
         
-        self.caps_frame = gtk.Frame(" %s " % _('Capabilities'))
+        self.caps_frame = Gtk.Frame(" %s " % _('Capabilities'))
         self.caps_frame.set_sensitive(False)
-        caps_box = gtk.HBox()
+        caps_box = Gtk.HBox()
         caps_box.set_border_width(6)
         self.caps_frame.add(caps_box)
-        self.pack_start(self.caps_frame, fill=False)
+        self.pack_start(self.caps_frame, True, False, 0)
         
         led = LEDDict(8)
         self.green = led["green"]
@@ -1138,37 +1138,37 @@ class FormatControl(gtk.VBox):
         
         for name, label_text in zip("icecast shoutcast recordable".split(),
                             (_('Icecast'), _('Shoutcast'), _('Recordable'))):
-            hbox = gtk.HBox()
+            hbox = Gtk.HBox()
             hbox.set_spacing(3)
-            label = gtk.Label(label_text)
+            label = Gtk.Label(label=label_text)
             hbox.pack_start(label, False)
             
-            image = gtk.Image()
+            image = Gtk.Image()
             image.set_from_pixbuf(self.clear)
             hbox.pack_start(image, False)
             
-            caps_box.pack_start(hbox, fill=False)
+            caps_box.pack_start(hbox, True, False, 0)
             setattr(self, "_" + name + "_indicator", image)
 
-        elem_box.append(gtk.HBox())
-        self.pack_start(elem_box[-1])
+        elem_box.append(Gtk.HBox())
+        self.pack_start(elem_box[-1], True, True, 0)
         
-        button_frame = gtk.Alignment(xalign=1.0, yscale=0.85)
+        button_frame = Gtk.Alignment.new(xalign=1.0, yscale=0.85)
         button_frame.props.top_padding = 6
-        button_box = gtk.HBox()
+        button_box = Gtk.HBox()
         button_box.set_spacing(3)
         button_frame.add(button_box)
-        image = gtk.image_new_from_stock(gtk.STOCK_GO_BACK, gtk.ICON_SIZE_MENU)
-        back_button = self._back_button = gtk.Button()
+        image = Gtk.Image.new_from_stock(Gtk.STOCK_GO_BACK, Gtk.IconSize.MENU)
+        back_button = self._back_button = Gtk.Button()
         back_button.set_sensitive(False)
         back_button.add(image)
         button_box.add(back_button)
-        image = gtk.image_new_from_stock(gtk.STOCK_GO_FORWARD, gtk.ICON_SIZE_MENU)
-        apply_button = self.apply_button = gtk.Button()
+        image = Gtk.Image.new_from_stock(Gtk.STOCK_GO_FORWARD, Gtk.IconSize.MENU)
+        apply_button = self.apply_button = Gtk.Button()
         apply_button.add(image)
         button_box.add(apply_button)
 
-        #test_button = gtk.ToggleButton("Test")
+        #test_button = Gtk.ToggleButton("Test")
         #button_box.add(test_button)
         #test_button.connect("toggled", self._on_test)
         
@@ -1181,7 +1181,7 @@ class FormatControl(gtk.VBox):
         apply_button.connect("clicked", self._on_apply, back_button, elem_box)
         back_button.connect("clicked", self._on_back, apply_button)
         
-        sizegroup = gtk.SizeGroup(gtk.SIZE_GROUP_VERTICAL)
+        sizegroup = Gtk.SizeGroup(Gtk.SizeGroupMode.VERTICAL)
         for each in elem_box:
             sizegroup.add_widget(each)
         

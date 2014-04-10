@@ -113,7 +113,7 @@ else
 fi
 
 # Used only to check the correct version is installed
-PKG_CHECK_MODULES([PYGTK], [pygtk-2.0 >= 2.6.0])
+PKG_CHECK_MODULES(PYGOBJECT, pygobject-3.0, HAVE_PYGOBJECT="yes", HAVE_PYGOBJECT="no")
 
 AC_MSG_CHECKING([for mutagen])
 ${PYTHON} -c "import mutagen" >/dev/null 2>&1
